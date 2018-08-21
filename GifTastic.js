@@ -29,7 +29,6 @@ function getGifs() {
     var searchTerm = $(this).attr("topic");
     var queryURL = "https://api.giphy.com/v1/gifs/search?api_key=dc6zaTOxFJmzC&limit=1" + "&q=" + searchTerm;
 
-
     $.ajax({
 
         url: queryURL,
