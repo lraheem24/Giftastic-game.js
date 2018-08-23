@@ -20,14 +20,15 @@ function makeGifs(topic) {
 //we have to add attributes for state (playing or not) add attributes to store fixed heights vs and
 // still vrs and inside of click handler look at attibutes and create if/else
 function renderGifs(topic) {
-    var img = $("<img/>");
-    img.attr("src", topic.images.fixed_height.url);
-    $("#gif-zone").append(img);
+    var stillUrl = topic.images.fixed_height_still.url;
+    var gifUrl = topic.images.fixed_height.url;
+
+    $("#gif-zone").append("<div><img class='image-item' data-state='still' data-gif='" + gifUrl + "' data-still='" + stillUrl + "' src='" + stillUrl + "'><p>" + topic.rating + "</p></div>");
 }
 
 function getGifs() {
     var searchTerm = $(this).attr("topic");
-    var queryURL = "https://api.giphy.com/v1/gifs/search?api_key=dc6zaTOxFJmzC&limit=1" + "&q=" + searchTerm;
+    var queryURL = "https://api.giphy.com/v1/gifs/search?api_key=dc6zaTOxFJmzC&limit=9" + "&q=" + searchTerm;
 
     $.ajax({
 
@@ -36,6 +37,7 @@ function getGifs() {
     }).then(function(response) {
         console.log(response);
         var results = response.data;
+
         for (j = 0; j < results.length; j++) {
             renderGifs(results[j]);
 
@@ -49,14 +51,23 @@ function getGifs() {
 $(document).ready(function() {
 
     $("#button-zone").on("click", "button", getGifs);
-    $("#gif-zone").on("click", "img", function() {
+    $(document).on("click", ".image-item", function() {
 
         //IF THEN logic for pausing buttons
 
-
-
-        console.log(this);
-
+        //Access attributes and grab their values for processing
+        var stillUrl = $(this).attr('data-still');
+        var gifUrl = $(this).attr('data-gif');
+        var stillState = $(this).attr('data-state');
+        if (stillState === 'still') {
+            //Change image to a gif
+            $(this).attr('data-state', 'gif');
+            $(this).attr('src', gifUrl);
+        } else {
+            //CHange image to a still
+            $(this).attr('data-state', 'still');
+            $(this).attr('src', stillUrl);
+        }
     })
     makeButtons(animals);
 
